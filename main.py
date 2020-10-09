@@ -46,8 +46,7 @@ def image_to_ascii(image_path, output="output", complex=False, resize=True):
     data_monochrome = raw_data_monochrome.astype("int32")
     threshold_data = threshold_ascii(data_monochrome, symbols, len(symbols))
     np.savetxt(f"{output}.txt", threshold_data, fmt="%s") # Saves array into text
-
-    print("Text saved!\n\n")
+    print("Text saved!")
 
 if __name__ == "__main__":
     image_url = r"test_media/evangelion.jpg"
