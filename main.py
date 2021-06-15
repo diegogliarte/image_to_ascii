@@ -14,7 +14,7 @@ def get_threshold_ascii(n, symbols, len):
         if ((i + 1) / len) * 255 >= n:
             return symbol
 
-def image_to_ascii(image_path, output="output", complex=False, resize=True):
+def image_to_ascii(image_path, output="output", complex=False, resize=True, resize_size=64):
     """
     Given an image, it creates an ASCII representation of itself by working with greyscales.
 
@@ -26,7 +26,7 @@ def image_to_ascii(image_path, output="output", complex=False, resize=True):
     """
     print("Beginning process...")
     if complex:
-        symbols = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. " # Looks ugly
+        symbols = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "[::-1] # Looks ugly
     else:
         symbols = " .:-=+*#%@"[::-1] # Looks fine
 
@@ -35,12 +35,13 @@ def image_to_ascii(image_path, output="output", complex=False, resize=True):
     if resize:
         # Resize because otherwise, text editors can't process so much symbols per line and look messy
         w, h = image.size
-        if w > 512 or h > 512: # The image is bigger, we will scale it down.
+        if w > resize_size or h > resize_size: # The image is bigger, we will scale it down.
             if w >= h:
-                image = image.resize((512, int(512 * (h / w))))
+                image = image.resize((resize_size, int(resize_size * (h / w))))
             else:
-                image = image.resize((int(512 * (w / h)), 512))
+                image = image.resize((int(resize_size * (w / h)), resize_size))
     data_color = np.asarray(image)
+    print(data_color.shape)
 
     raw_data_monochrome = data_color.sum(axis=2)/3 # Get's greyscale values in a 2D array
     data_monochrome = raw_data_monochrome.astype("int32")
@@ -49,5 +50,5 @@ def image_to_ascii(image_path, output="output", complex=False, resize=True):
     print("Text saved!")
 
 if __name__ == "__main__":
-    image_url = r"test_media/evangelion.jpg"
-    image_to_ascii(image_url, resize=True)
+    image_url = r"test.jpg" # Input of the program. Didn't bother to create an arg parser.
+    image_to_ascii(image_url, resize=True, complex=False, resize_size=64)
